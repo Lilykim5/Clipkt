@@ -35,7 +35,7 @@
             margin-bottom: 36px;
         }
 
-        /* Centered buttons row */
+        /* Hero Action Buttons */
         .auth-actions {
             display: flex;
             justify-content: center;
@@ -43,11 +43,12 @@
         }
 
         .action-btn {
-            text-decoration: none;
+            border: none;
             padding: 12px 28px;
             font-size: 16px;
             font-weight: bold;
             border-radius: 8px;
+            cursor: pointer;
             transition: 0.2s ease-in-out;
         }
 
@@ -70,6 +71,105 @@
         .btn-signup:hover {
             background-color: #0056b3;
         }
+
+        /* Modal Background Overlay */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.45);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        /* Modal Dialog Box */
+        .modal-box {
+            background-color: #ffffff;
+            padding: 32px 28px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 360px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            position: relative;
+            text-align: left;
+        }
+
+        /* Close Button (X) */
+        .modal-close {
+            position: absolute;
+            top: 14px;
+            right: 16px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: #888;
+            cursor: pointer;
+        }
+
+        .modal-close:hover {
+            color: #111;
+        }
+
+        .modal-title {
+            margin: 0 0 20px 0;
+            font-size: 22px;
+            color: #111827;
+            text-align: center;
+        }
+
+        /* Form Inputs */
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #4b5563;
+            margin-bottom: 6px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px 12px;
+            font-size: 15px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        .input-group input:focus {
+            border-color: #3eb489;
+        }
+
+        /* Confirm Submit Button */
+        .confirm-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #3eb489;
+            border: none;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: background-color 0.2s;
+        }
+
+        .confirm-btn:hover {
+            background-color: #359f77;
+        }
     </style>
 </head>
 <body>
@@ -79,12 +179,65 @@
         <div class="top-text">A website dedicated to quick and easy video editing</div>
         <div class="bottom-text">I dont know javascript :D</div>
 
-        <!-- Auth buttons centered in the middle -->
         <div class="auth-actions">
-            <a href="login.html" class="action-btn btn-login">Log In</a>
-            <a href="signup.html" class="action-btn btn-signup">Sign Up</a>
+            <button type="button" class="action-btn btn-login" id="open-login">Log In</button>
+            <button type="button" class="action-btn btn-signup" id="open-signup">Sign Up</button>
         </div>
     </main>
+
+    <!-- Native HTML Form -->
+    <div class="modal-overlay" id="auth-modal">
+        <div class="modal-box">
+            <button type="button" class="modal-close" id="close-modal">&times;</button>
+            <h2 class="modal-title" id="modal-heading">Log In</h2>
+            
+            <!-- Standard form redirect used by real websites -->
+            <form action="dashboard.html" method="GET">
+                <div class="input-group">
+                    <label id="lbl-username">Username</label>
+                    <input type="text" name="user" required>
+                </div>
+                
+                <div class="input-group">
+                    <label id="lbl-password">Password</label>
+                    <input type="password" name="pass" required>
+                </div>
+
+                <button type="submit" class="confirm-btn">Confirm</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById('auth-modal');
+        const heading = document.getElementById('modal-heading');
+        const lblUser = document.getElementById('lbl-username');
+        const lblPass = document.getElementById('lbl-password');
+
+        document.getElementById('open-login').addEventListener('click', () => {
+            heading.textContent = 'Log In';
+            lblUser.textContent = 'Username';
+            lblPass.textContent = 'Password';
+            modal.classList.add('active');
+        });
+
+        document.getElementById('open-signup').addEventListener('click', () => {
+            heading.textContent = 'Sign Up';
+            lblUser.textContent = 'Create Username';
+            lblPass.textContent = 'Create Password';
+            modal.classList.add('active');
+        });
+
+        document.getElementById('close-modal').addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+            }
+        });
+    </script>
 
 </body>
 </html>
