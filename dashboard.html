@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Clipkt</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            text-align: center;
+        }
+
+        /* Slide bar */
+        .slide-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 110px;
+            background-color: #2b2d42;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            box-sizing: border-box;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-100%);
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            z-index: 1000;
+        }
+
+        .slide-bar.open {
+            transform: translateY(0);
+        }
+
+        /* Left brand */
+        .brand-container {
+            display: flex;
+            align-items: flex-end;
+            gap: 12px;
+            text-align: left;
+            z-index: 2;
+        }
+
+        .bar-brand {
+            font-size: 28px;
+            font-weight: bold;
+            color: #3eb489;
+            letter-spacing: 0.5px;
+            line-height: 1;
+        }
+
+        .bar-subtitle {
+            font-size: 12px;
+            color: #cbd5e1;
+            line-height: 1.2;
+            margin-bottom: 2px;
+            white-space: nowrap;
+        }
+
+        /* Centered button cluster */
+        .bar-center-buttons {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            gap: 28px;
+        }
+
+        /* Pill buttons */
+        .media-btn {
+            background-color: transparent;
+            color: #ffffff;
+            border: 2px solid #3eb489;
+            padding: 9px 24px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .media-btn:hover {
+            background-color: rgba(62, 180, 137, 0.2);
+        }
+
+        .media-btn.active {
+            background-color: #3eb489;
+            color: #ffffff;
+            box-shadow: 0 2px 8px rgba(62, 180, 137, 0.4);
+        }
+
+        /* Subtle, edge-aligned Sign Out button */
+        .bar-right-area {
+            display: flex;
+            align-items: center;
+            z-index: 2;
+        }
+
+        .signout-btn {
+            text-decoration: none;
+            color: #94a3b8;
+            border: 1px solid #475569;
+            background-color: transparent;
+            padding: 6px 14px;
+            font-size: 13px;
+            font-weight: 500;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .signout-btn:hover {
+            color: #ffffff;
+            border-color: #cbd5e1;
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+        /* Attached tab */
+        .toggle-tab {
+            position: absolute;
+            bottom: -38px;
+            right: 120px;
+            width: 46px;
+            height: 38px;
+            background-color: #2b2d42;
+            border: none;
+            border-radius: 0 0 8px 8px;
+            cursor: pointer;
+            color: #3eb489;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+            transition: background-color 0.2s;
+        }
+
+        .toggle-tab:hover {
+            background-color: #232536;
+        }
+
+        /* Workspace container */
+        .content {
+            margin-top: 150px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Panels */
+        .workspace-panel {
+            display: none;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 30px;
+            width: 80%;
+            max-width: 900px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+            text-align: left;
+        }
+
+        .workspace-panel.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .panel-tools {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .tool-chip {
+            background-color: #eef2f6;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .tool-chip:hover {
+            background-color: #3eb489;
+            color: white;
+        }
+        /* Support Section Styling */
+        .support-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .support-section h3 {
+            margin: 0 0 8px 0;
+            font-size: 18px;
+            color: #1e293b;
+        }
+
+        .support-section p {
+            margin-bottom: 16px;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .bmc-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background-color: #FFDD00;
+            color: #000000;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 15px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .bmc-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .bmc-icon {
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="slide-bar open" id="slide-bar">
+        <div class="brand-container">
+            <div class="bar-brand">Clipkt</div>
+            <div class="bar-subtitle">A website designated for quick and easy video editing</div>
+        </div>
+
+        <div class="bar-center-buttons">
+            <button class="media-btn active" id="tab-photo">Photo</button>
+            <button class="media-btn" id="tab-video">Video</button>
+            <button class="media-btn" id="tab-info">More Info</button>
+        </div>
+
+        <div class="bar-right-area">
+            <a href="index.html" class="signout-btn">Sign Out</a>
+        </div>
+
+        <button class="toggle-tab" id="toggle-tab-btn" title="Toggle Menu">▲</button>
+    </header>
+
+    <main class="content">
+        <!-- Photo Studio -->
+        <section class="workspace-panel active" id="photo-panel">
+            <h2>📷 Photo Studio</h2>
+            <p>Upload and adjust photos with filters, crop, and framing tools.</p>
+            <div class="panel-tools">
+                <button class="tool-chip">Crop Image</button>
+                <button class="tool-chip">Filters & Color</button>
+                <button class="tool-chip">Resize</button>
+            </div>
+        </section>
+
+        <!-- Video Studio -->
+        <section class="workspace-panel" id="video-panel">
+            <h2>🎬 Video Studio</h2>
+            <p>Assemble footage, slice clips, and layer audio tracks.</p>
+            <div class="panel-tools">
+                <button class="tool-chip">Trim Clip</button>
+                <button class="tool-chip">Add Audio</button>
+                <button class="tool-chip">Export 1080p</button>
+            </div>
+        </section>
+
+        <!-- More Info Panel -->
+        <section class="workspace-panel" id="info-panel">
+            <h2>ℹ️ About Clipkt</h2>
+            <p>Clipkt is a lightweight in-browser editor built for fast turnaround edits without complicated software installation.</p>
+            <ul>
+                <li>Quick timeline cutting and cropping</li>
+                <li>Zero-lag web-based previews</li>
+                <li>Simple one-click exporting</li>
+            </ul>
+
+            <!-- Buy Me A Coffee Section -->
+            <div class="support-section">
+                <h3>Support Clipkt</h3>
+                <p>If you find this tool helpful, consider supporting development!</p>
+                
+                <!-- Replace YOUR_USERNAME with your actual link once active -->
+                <a href="https://www.buymeacoffee.com/YOUR_USERNAME" target="_blank" class="bmc-button">
+                    <span class="bmc-icon">☕</span> Buy me a coffee
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const slideBar = document.getElementById('slide-bar');
+        const toggleBtn = document.getElementById('toggle-tab-btn');
+
+        toggleBtn.addEventListener('click', () => {
+            slideBar.classList.toggle('open');
+            toggleBtn.textContent = slideBar.classList.contains('open') ? '▲' : '▼';
+        });
+
+        // Tab switching logic
+        const tabs = [
+            { btn: document.getElementById('tab-photo'), panel: document.getElementById('photo-panel') },
+            { btn: document.getElementById('tab-video'), panel: document.getElementById('video-panel') },
+            { btn: document.getElementById('tab-info'), panel: document.getElementById('info-panel') }
+        ];
+
+        tabs.forEach(tab => {
+            tab.btn.addEventListener('click', () => {
+                tabs.forEach(t => {
+                    t.btn.classList.remove('active');
+                    t.panel.classList.remove('active');
+                });
+                tab.btn.classList.add('active');
+                tab.panel.classList.add('active');
+            });
+        });
+    </script>
+
+</body>
+</html>
